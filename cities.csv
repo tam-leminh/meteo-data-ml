@@ -1,46 +1,47 @@
-Friedrichshafen;ALL
-Dogern;ALL
-Balingen;ALL
-Hermaringen;ALL
-Pforzheim;ALL
-Kirchberg;ALL
-Freudenberg;DE
-Piding;DE
-Mittenwald;DE
+City;Country
+Friedrichshafen;DE
+Friburg;DE
+Stuttgart;DE
+Wurzburg;DE
+Pforzheim;DE
+Crailsheim;DE
+Ulm;DE
+Memmingen;DE
+Augsburg;DE
 Rotthalmuenster;DE
-Langquaid-Oberschnei;DE
-Oberviechtach;DE
-Fichtelberg;DE
-Ostheim v.d. Rhoen;DE
-Deutschneudorf;DE
+Munchen;DE
+Ratisbon;DE
+Bayreuth;DE
+Nurnberg;DE
+Zwickau;DE
 Klitzschen bei Torga;DE
-Muskau, Bad;DE
-Quedlinburg;DE
-Demker;DE
-Schmieritz;DE
-Waldems;DE
-Gilserberg;DE
+Chemnitz;DE
+Leipzig;DE
+Erfurt;DE
+Magdeburg;DE
+Frankfurt;DE
+Marburg;DE
 Kaiserslautern;DE
-Manderscheid;DE
-Weilerswist;DE
-Haaren;DE
-Toenisvorst;DE
-Rahden;DE
+Koblenz;DE
+Kassel;DE
+Bonn;DE
+Dusseldorf;DE
+Meppen;DE
 Berlin;DE
-Zehdenick;DE
-Lenzen;DE
-Doerpen;DE
-Rotenburg;DE
-Ruthenstrom;DE
-Spiekeroog;DE
-Sukow;DE
-Darsser Ort;DE
-Travemuende;DE
-Hattstedt;DE
+Dortmund;DE
+Münster;DE
+Bielefeld;DE
+Hannover;DE
+Bremen;DE
+Hamburg;DE
+Kiel;DE
+Rostock;DE
+Aachen;DE
+Fulda;DE
 Tor;EG
 Suez;EG
 Nekhel;EG
-Cairo Airport;EG
+Cairo;EG
 Wadi El Natroon;EG
 El Arish;EG
 Port Said;EG
@@ -87,7 +88,7 @@ Relizane;DZ
 Oran;DZ
 Khenchella;DZ
 Setif;DZ
-Medea;DZ
+Alger;DZ
 Constantine;DZ
 Bouira;DZ
 Tenes;DZ
@@ -111,7 +112,7 @@ Turaif;SA
 Aqaba;JO
 Ma'An;JO
 Ghor El Safi;JO
-Queen Alia Airport;JO
+Amman;JO
 Mafraq;JO
 Tel-Aviv;IL
 Haifa;IL
@@ -122,10 +123,9 @@ Hama;SY
 Lattakia;SY
 Hassakah;SY
 Kamishli;SY
-Artashat;AM
-Kamo;AM
-Ashotsk;AM
-Bolnisi;GE
+Erevan;AM
+Gyumri;AM
+Tbilissi;GE
 Batumi;GE
 Zestafoni;GE
 Zugdidi;GE
@@ -199,12 +199,11 @@ Ai-Petri;UA
 Chornomors'Ke;UA
 Kherson;UA
 Tiraspol;MD
-Kagul;MD
+Chisinau;MD
 Odesa;UA
-Dubasari;MD
+Balti;MD
 Kryvyi Rih;UA
 Liubashivka;UA
-Bel'Cy;MD
 Mohyliv-Podilskyi;UA
 Chernivtsi;UA
 Uzhhorod;UA
@@ -226,7 +225,7 @@ Konotop;UA
 Volodymyr-Volynskyi;UA
 Chernihiv;UA
 Sarny;UA
-Gomel;BY
+Homiel;BY
 Mozyr;BY
 Pinsk;BY
 Brest;BY
@@ -312,7 +311,7 @@ Baranovici;BY
 Brjansk;RU
 Roslavl;RU
 Mogilev;BY
-Mar'Ina Gorka;BY
+Marina Gorka;BY
 Minsk;BY
 Lida;BY
 Smolensk;RU
@@ -339,11 +338,11 @@ Valga;EE
 Kihnu;EE
 Vilsandi;EE
 Gdov;RU
-Turi;EE
+Parnu;EE
 Tihvin;RU
 Ljuban;RU
 Kingisepp;RU
-Kunda;EE
+Tartu;EE
 Hanty-Mansijsk;RU
 Saim;RU
 Ivdel;RU
@@ -416,8 +415,8 @@ Murmansk;RU
 Verkhove Lotta;RU
 Nikel;RU
 Vaida Guba Bay;RU
-Larnaca Airport;CY
-Paphos Airport;CY
+Larnaca;CY
+Paphos;CY
 Alsancak;TR
 Yenierenkoy;CY
 Lefke;TR
@@ -483,7 +482,7 @@ Souda;GR
 Milos;GR
 Methoni;GR
 Zakinthos;GR
-Elefsis;GR
+Athenes;GR
 Tripolis;GR
 Chios;GR
 Skyros Island;GR
@@ -497,36 +496,36 @@ Chrysoupoli;GR
 Thessaloniki;GR
 Kastoria;GR
 Luqa;MT
-Capo Carbonara;IT
-Capo Bellavista;IT
+Cagliari;IT
+Sassari;IT
 Olbia;IT
-Capo Caccia;IT
+Oristano;IT
 Lampedusa;IT
-Cozzo Spadaro;IT
+Gela;IT
 Catania;IT
 Sciacca;IT
 Reggio Calabria;IT
 Palermo;IT
 Catanzaro;IT
-S. Maria Di Leuca;IT
-Bonifati;IT
-Marina Di Ginosa;IT
-Capri;IT
+Lecce;IT
+Scalea;IT
+Policoro;IT
+Napoli;IT
 Caserta;IT
 Ponza;IT
 Bari;IT
 Vieste;IT
-Pratica Di Mare;IT
-S. Giovanni Teatino;IT
-Monte Terminillo;IT
+Roma;IT
+Pescara;IT
+Terni;IT
 Grosseto;IT
-Falconara;IT
+Ancona;IT
 Arezzo;IT
 Pisa;IT
-Capo Mele;IT
-Cervia;IT
+San Marino;SM
+Bologna;IT
 Ferrara;IT
-Passo Dei Giovi;IT
+Genoa;IT
 Trieste;IT
 Venezia;IT
 Verona;IT
@@ -541,8 +540,6 @@ Kurdjali;BG
 Sandanski;BG
 Burgas;BG
 Sliven;BG
-Mussala Top;BG
-Mourgash;BG
 Varna;BG
 Razgrad;BG
 Vidin;BG
@@ -574,19 +571,18 @@ Supuru De Jos;RO
 Suceava;RO
 Sighetu Marmatiei;RO
 Neum;BA
-Sarajevo-Bejelave;BA
+Sarajevo;BA
 Tuzla;BA
 Banja Luka;BA
 Split;HR
-Knin;HR
-Gradiste;HR
-Gospic;HR
-Ogulin;HR
-Daruvar;HR
+Dubrovnik;HR
+Zadar;HR
+Karlovac;HR
+Rijeka;HR
+Pula;HR
 Varazdin;HR
-Elbasan;AL
-Sazan Island;AL
-Kukes;AL
+Tirana;AL
+Saranda;AL
 Skopje;MK
 Prilep;MK
 Vranje;RS
@@ -597,13 +593,13 @@ Pozega Uzicka;RS
 Beograd;RS
 Zrenjanin;RS
 Sombor;RS
-Kecskemet;HU
-Siofok;HU
-Szentgotthard;HU
+Budapest;HU
+Pecs;HU
+Szeged;HU
 Eger;HU
-Tat;HU
+Debrecen;HU
 Sopron;HU
-Josvafo;HU
+Szolnok;HU
 Lesko;PL
 Nowy Sacz;PL
 Bielsko-Biala;PL
@@ -630,15 +626,15 @@ Poprad;SK
 Sliac;SK
 Zilina;SK
 Jaslovske Bohunice;SK
-Prostejov;CZ
-Kostelni Myslova;CZ
+Ostrava;CZ
+Brno;CZ
 Liberec;CZ
 Praha;CZ
-Kocelovice;CZ
+Ceske Budejovice;CZ
 St.Poelten;AT
-Aflenz;AT
-Mariapfarr;AT
-Ahaus (All) - Alt. 46m;DE
+Vienne;AT
+Graz;AT
+Schwerin;DE
 Andorra;AD
 Lisboa;PT
 Braganca;PT
@@ -648,128 +644,128 @@ Penhas Douradas;PT
 Vila Real;PT
 Beja;PT
 Faro;PT
-Viana Do Castelo-Chafe;PT
+Porto;PT
 Monte Real;PT
-Roquetas de Mar;ES
+Almeria;ES
 Torrox;ES
-Vejer de la Frontera;ES
+Cadix;ES
 Ronda;ES
-Cartagena;ES
-Baza Cruz Roja;ES
+Murcia;ES
+Sevilla;ES
 Jaén;ES
-Morón de la Frontera;ES
-Cazalla de la Sierra;ES
-El Arenosillo;ES
-Ibiza;ES
-Javea, Ayuntamiento;ES
-Caravaca Fuentes del Marqués;ES
-Villarrodrigo;ES
-Ciudad Real;ES
-Villanueva de Córdoba;ES
-Jerez de Los Caballeros;ES
-Don Benito;ES
-Menorca;ES
-Sa Pobla;ES
-Polinyà de Xúquer;ES
-Castellón de la Plana;ES
-Utiel;ES
-Tarancon;ES
-Talavera de la Reina;ES
-San Pablo de Los Montes;ES
+Badajoz;ES
 Caceres;ES
-San Clemente;ES
-Villafranca;ES
-Sant Jaume d'Enveja;ES
-Calamocha;ES
+Cordoba;ES
+Ibiza;ES
+Palma de Mallorca;ES
+Albacete;ES
+Valencia;ES
+Ciudad Real;ES
+Toledo;ES
 Madrid;ES
-Segovia;ES
-La Covatilla;ES
+Cuenca;ES
 Salamanca;ES
-Sabadell;ES
-Lerida;ES
-Zaragoza;ES
-Sigüenza;ES
-Palacios de la Sierra;ES
+Teruel;ES
+Zamora;ES
+Castellón de la Plana;ES
 Valladolid;ES
-Bielsa;ES
-Sos del Rey Católico;ES
-Vitoria;ES
-Carrion de Los Condes;ES
-Punta Galea;ES
-Puerto de San Isidro;ES
-Ponferrada;ES
-Xinzo de Limia;ES
-Pontevedra;ES
-Fisterra;ES
-Baztan;ES
-Cabo Peñas;ES
+Tarragona;ES
+Zaragoza;ES
+Aranda de Duero;ES
+Almaden;ES
+Oropesa;ES
+Leon;ES
+Vigo;ES
+La Coruna;ES
 Lugo;ES
-Bares;ES
-Cap Sagro;FR
-Figari;FR
-Alistro;FR
-Cap Béar;FR
-Cannes;FR
-Bec De L'Aigle;FR
-Nimes;FR
-Beziers;FR
-Albi;FR
+Gijon;ES
+Santander;ES
+Burgos;ES
+Bilbao;ES
+Logrono;ES
+Pampelona;ES
+Lerida;ES
+Girona;ES
+Valladolid;ES
+Barcelona;ES
+Manresa;ES
+Calamocha;ES
+Carrion de Los Condes;ES
+Soria;ES
+Peniscola;ES
+Segovia;ES
+Xinzo de Limia;ES
+Guadalajara;ES
+Fisterra;ES
+Siguenza;ES
+Riopar;ES
+Huelva;ES
+Ponferrada;ES
+Perpignan;FR
+Foix;FR
+Narbonne;FR
+Montpellier;FR
+Toulouse;FR
+Pau;FR
+Biarritz;FR
+Mont-de-Marsan;FR
+Bordeaux;FR
 Auch;FR
-Embrun;FR
-Montelimar;FR
-Mont Aigoual;FR
-Aurillac;FR
+Agen;FR
 Bergerac;FR
-Biscarosse;FR
-Chambery;FR
-Les Sauvages;FR
-Le Puy;FR
+Cahors;FR
+Aurillac;FR
+Rodez;FR
+Albi;FR
+Mende;FR
+Millau;FR
+Le Puy en Velay;FR
 Clermont-Ferrand;FR
 Limoges;FR
-Cognac;FR
-Lons-Le-Saunier;FR
-Chateauroux;FR
-Poitiers;FR
+Avignon;FR
+Marseille;FR
+Nice;FR
+Gap;FR
+Valence;FR
+Grenoble;FR
+Lyon;FR
+Angoulême;FR
+Royan;FR
 La Rochelle;FR
-La Roche-Sur-Yon;FR
-Luxeuil;FR
-Dijon;FR
-Chatillon-Sur-Seine;FR
-Nevers;FR
-Orleans;FR
-Le Mans;FR
+Poitiers;FR
+La Roche sur Yon;FR
 St-Nazaire;FR
-Lann Bihoue;FR
-Nancy;FR
-Troyes;FR
-Paris;FR
-Toussus Le Noble;FR
-Rennes;FR
-Saint-Brieuc;FR
-Brest;FR
-Charleville;FR
-Albert-Bray;FR
-Le Havre-Octeville;FR
-Valognes;FR
-Dunkerque;FR
-San Bernardino;CH
-Adelboden;CH
-Bad Ragaz;CH
+Nantes;FR
+Angers;FR
+Tours;FR
+Chateauroux;FR
+Brive la Gaillarde;FR
+Montlucon;FR
+Bourges;FR
+Bourg en Bresse;FR
+Dijon;FR
+Besancon;FR
+Mulhouse;FR
+Strasbourg;FR
+Metz;FR
+Bale;CH
+Zurich;CH
+Liechtenstein;LI
 La Chaux-De-Fonds;CH
-Schaffen;BE
-Herwijnen;NL
-Lauwersoog;NL
-Marknesse;NL
-Nexoe;DK
-Sjaelsmark;DK
-Brandelev;DK
-Toroe;DK
+Bruxelles;BE
+Amsterdam;NL
+Rotterdam;NL
+Groningen;NL
+Copenhagen;DK
+Odense;DK
+Aarhus;DK
+Aalborg;DK
+Esbjerg;DK
 Horsens;DK
-Blaavand;DK
 Anholt;DK
-Foulum;DK
-Skagen;DK
-Thorshavn;DK
+Hostelbro;DK
+Frederikshaven;DK
+Thisted;DK
 Dalatangi;IS
 Grimsey;IS
 Hveravellir;IS
@@ -780,46 +776,46 @@ Bolungarvík;IS
 Gufuskalar;IS
 Skjaldthingsstadir;IS
 Hornafjordur;IS
-Malin Head;IE
-Ballyhaise;IE
+Limerick;IE
+Sligo;IE
 Belmullet;IE
-Claremorris;IE
+Galway;IE
 Dublin;IE
-Gurteen;IE
-Johnstown Castle;IE
+Dundalk;IE
+Wexford;IE
 Cork;IE
 Valentia;IE
 Belfast;GB
-Herstmonceux;GB
-Saint Catherine's Point;GB
-Yeovilton;GB
+Douglas;GB
+Penzance;GB
+Exeter;GB
 Plymouth;GB
-Scilly;GB
+Bristol;GB
 London;GB
-St Athan;GB
-Little Rissington;GB
+Bournemouth;GB
+Ipswitch;GB
+Peterborough;GB
+Norwich;GB
+Birmingham;GB
+Leicester;GB
+Cardiff;GB
+Swansea;GB
 Milford Haven;GB
-Wattisham;GB
-Coleshill;GB
-Sennybridge;GB
-Weybourne;GB
-Oswestry;GB
-Donna Nook;GB
+Holyhead;GB
+Liverpool;GB
+Manchester;GB
+Stoke on Trent;GB
+Sheffield;GB
+Hull;GB
 Leeds;GB
-Valley;GB
-Bridlington;GB
-Loftus;GB
-Boulmer;GB
-Shap;GB
-Isle Of Man;GB
-Leuchars;GB
+Carlisle;GB
+Newcastle;GB
+Middlesbrough;GB
 Glasgow;GB
-Tiree;GB
+Edimburg;GB
 Aberdeen;GB
+Inverness;GB
 Wick;GB
-Lossiemouth;GB
-Tulloch Bridge;GB
-Bealach Na Ba;GB
 Stornoway;GB
 Sule Skerry;GB
 Fair Isle;GB
@@ -861,7 +857,7 @@ Smhi;SE
 Hultsfred;SE
 Visingsoe;SE
 Kroppefjaell;SE
-Harsfjarden;SE
+Stockholm;SE
 Kerstinbo;SE
 Kilsbergen;SE
 Mora;SE
@@ -889,12 +885,12 @@ Kiruna;SE
 Katterjakk;SE
 Ritsem;SE
 Oslo;NO
-Torp;NO
+Porsgrunn;NO
 Torungen;NO
 Nesflaten;NO
-Lindesnes;NO
-Sirdal;NO
-Sauda;NO
+Kristiansand;NO
+Stavanger;NO
+Haugesund;NO
 Ekofisk;NO
 Trysil;NO
 Flisa;NO
@@ -905,7 +901,7 @@ Reimegrend;NO
 Forde;NO
 Gullfaks;NO
 Namsos;NO
-Frosta;NO
+Trondheim;NO
 Folldal;NO
 Halten;NO
 Lebergsfjellet;NO
@@ -921,12 +917,91 @@ Hasvik;NO
 Torsvag;NO
 Hekkingen;NO
 Jan Mayen;NO
-Fameck;FR
-Néris-les-Bains;FR
-Mazères Le Massuet;FR
-Haegen;FR
-Saint-Yrieix-le-Déjalat;FR
+Nancy;FR
+Chaumont;FR
+Troyes;FR
+Auxerre;FR
+Reims;FR
 Fira;GR
 Sharm El Sheikhintl;EG
 St Catherine;EG
-Oberpfaffenhofen;DE
+Brunswick;DE
+Innsbruck;AT
+Linz;AT
+Salzburg;AT
+Luxemburg;LU
+Sofia;BG
+Stara Zagora;BG
+Genève;CH
+Sion;CH
+Nicosie;CY
+Plzen;CZ
+Talinn;EE
+Rakvere;EE
+Jyvaskyla;FI
+Rovaniemi;FI
+Saint-Dizier;FR
+Orléans;FR
+Chartres;FR
+Melun;FR
+Paris;FR
+Evreux;FR
+Alencon;FR
+Caen;FR
+Le Mans;FR
+Rennes;FR
+Lorient;FR
+Brest;FR
+Saint-Brieuc;FR
+Cherbourg;FR
+Rouen;FR
+Beauvais;FR
+Amiens;FR
+Le Havre;FR
+Boulogne-sur-Mer;FR
+Calais;FR
+Dunkerque;FR
+Lille;FR
+Arras;FR
+Compiègne;FR
+Laon;FR
+Maubeuge;FR
+Charleville-Mezieres;FR
+Verdun;FR
+Tiree;GB
+Kasos;GR
+Patras;GR
+Zagreb;HR
+Osijek;HR
+Slavonski Brod;HR
+Malin Head;IE
+Gaza;IL
+Caloforte;IT
+Capri;IT
+Firenze;IT
+Parma;IT
+Kaunas;LT
+Klaipeda;LT
+Tanger;MA
+Bastia;FR
+Ajaccio;FR
+Eindhoven;NL
+Enschede;NL
+Bucarest;RO
+Cluj-Napoca;RO
+Timisoara;RO
+Iasi;RO
+Novi Sad;RS
+Pristina;RS
+Goteborg;SE
+Jonkoping;SE
+Linkoping;SE
+Orebro;SE
+Bratislava;SK
+Kosice;SK
+Nitra;SK
+Homs;SY
+Alep;SY
+Tunis;TN
+Istanbul;TR
+Kyiv;UA
