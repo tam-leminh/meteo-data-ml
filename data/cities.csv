@@ -54,14 +54,14 @@ Sidi Bouzid;TN;
 Mahdia;TN;
 Thala;TN;
 El Kef;TN;
-Enfidha;TN;
+Enfida;TN;
 Beja;TN;
 Adrar;DZ;
 Timimoun;DZ;
 El Golea;DZ;
 Hassi Messaoud;DZ;
 Bechar;DZ;
-Ghardaïa;DZ;
+Ghardaïa;DZ;2496049
 Ain Sefra;DZ;
 El Oued;DZ;
 El Bayadh;DZ;
@@ -71,7 +71,7 @@ Djelfa;DZ;
 Biskra;DZ;
 Maghnia;DZ;
 Sidi Bel Abbes;DZ;
-Bou Saâda;DZ;
+Bou Saâda;DZ;2502385
 Ksar Chellala;DZ;
 Relizane;DZ;
 Oran;DZ;
@@ -80,7 +80,7 @@ Setif;DZ;
 Algiers;DZ;
 Constantine;DZ;
 Bouira;DZ;
-Ténès;DZ;
+Ténès;DZ;2477148
 Bejaia;DZ;
 Annaba;DZ;
 Ceuta;ES;
@@ -389,10 +389,9 @@ Kars;TR;
 Erzurum;TR;
 Erzincan;TR;
 Sivas;TR;
-Gümü?hane;TR;
 Amasya;TR;
 Korgun;TR;
-Karabük;TR;
+Karabük;TR;862468
 Duzce;TR;
 Belek;TR;
 Tekirdag;TR;
@@ -571,7 +570,7 @@ Porto;PT;
 Monte Real;PT;
 Almeria;ES;
 Torrox;ES;
-Cádiz;ES;
+Cádiz;ES;6356927
 Ronda;ES;
 Murcia;ES;
 Sevilla;ES;
@@ -675,7 +674,7 @@ Basel;CH;
 Zurich;CH;
 Vaduz;LI;
 La Chaux-De-Fonds;CH;
-Bruxelles;BE;
+Brussels;BE;
 Amsterdam;NL;
 Rotterdam;NL;
 Groningen;NL;
@@ -694,7 +693,7 @@ Siglufjordur;IS;
 Vestmannaeyjar;IS;
 Reykjavik;IS;
 Isafjoerdur;IS;
-Vopnafjörður;IS;
+Vopnafjörður;IS;2625189
 Isafjoerdur;IS;
 Bjarnanes;IS;
 County Limerick;IE;
@@ -744,7 +743,7 @@ Daliburgh;GB;
 Helsinki;FI;
 Mariehamn;FI;
 Hanko;FI;
-Kökar;FI;
+Kökar;FI;651989
 Turku;FI;
 Lahti;FI;
 Kuopio;FI;
@@ -811,7 +810,7 @@ Sortland;NO;
 Bodo;NO;
 Vik;NO;3131781
 Arendal;NO;
-Båtsfjord;NO;
+Båtsfjord;NO;780714
 Honningsvag;NO;
 Alta;NO;
 Hasvik;NO;
