@@ -3,11 +3,11 @@ import numpy as np
 import math
 
 #Define a distance
-def sq_distance(lon1, lat1, lon2, lat2):
+def sq_distance(lat1, lon1, lat2, lon2):
     d = (lon2-lon1)**2 + (lat2-lat1)**2
     return d
     
-def hv_distance(lon1, lat1, lon2, lat2):
+def hv_distance(lat1, lon1, lat2, lon2):
     radius = 6371 # km
     dlat = math.radians(lat2-lat1)
     dlon = math.radians(lon2-lon1)
