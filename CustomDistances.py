@@ -4,16 +4,26 @@ import math
 
 #Define a distance
 def sq_distance(lat1, lon1, lat2, lon2):
-    d = (lon2-lon1)**2 + (lat2-lat1)**2
+    if isinstance(lat1, np.ndarray):
+        d = np.sqrt(np.power(lon2-lon1,2) + np.power(lat2-lat1,2))
+    else: 
+        d = math.sqrt((lon2-lon1)**2 + (lat2-lat1)**2)
     return d
     
 def hv_distance(lat1, lon1, lat2, lon2):
     radius = 6371 # km
-    dlat = math.radians(lat2-lat1)
-    dlon = math.radians(lon2-lon1)
-    a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) \
-        * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    if isinstance(lat1, np.ndarray) or isinstance(lat2, np.ndarray):
+        dlat = np.radians(lat2-lat1)
+        dlon = np.radians(lon2-lon1)
+        a = np.sin(dlat/2) * np.sin(dlat/2) + np.cos(np.radians(lat1)) \
+            * np.cos(np.radians(lat2)) * np.sin(dlon/2) * np.sin(dlon/2)
+        c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1-a))
+    else:
+        dlat = math.radians(lat2-lat1)
+        dlon = math.radians(lon2-lon1)
+        a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) \
+            * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     d = radius * c
     return d
     
