@@ -74,7 +74,8 @@ class RBF(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
             dists = CustomDistances.cPdist(X, metric=self.metric) / np.power(length_scale, 2)
             K = np.exp(-.5 * dists)
             # convert from upper-triangular matrix to square matrix
-            K = squareform(K)
+            if len(K.shape) == 1:
+                K = squareform(K)
             np.fill_diagonal(K, 1)
         else:
             if eval_gradient:
@@ -88,8 +89,12 @@ class RBF(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
                 # Hyperparameter l kept fixed
                 return K, np.empty((X.shape[0], X.shape[0], 0))
             elif not self.anisotropic or length_scale.shape[0] == 1:
-                K_gradient = \
-                    (K * squareform(dists))[:, :, np.newaxis]
+                if len(dists.shape) == 1:
+                    K_gradient = \
+                        (K * squareform(dists))[:, :, np.newaxis]
+                else:
+                    K_gradient = \
+                        (K * dists)[:, :, np.newaxis]
                 return K, K_gradient
             elif self.anisotropic:
                 # We need to recompute the pairwise dimension-wise distances
