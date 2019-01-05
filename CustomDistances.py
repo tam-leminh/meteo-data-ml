@@ -43,22 +43,12 @@ def cPdist(X, metric='haversine'):
 
         if mstr == 'haversine':
             
-            k = 0
-            for i in range(0, m):
-                for j in range(i+1, m):
-                    dm[k] = hv_distance(X[i][0],X[i][1],X[j][0],X[j][1])
-                    k += 1
-                    
+            dm = hv_distance(X[:,0,None], X[:,1,None], X[:,0], X[:,1])
             return dm
                     
         elif mstr == 'euclidian':
         
-            k = 0
-            for i in range(0, m):
-                for j in range(i+1, m):
-                    dm[k] = sq_distance(X[i][0],X[i][1],X[j][0],X[j][1])
-                    k += 1
-                
+            dm = sq_distance(X[:,0,None], X[:,1,None], X[:,0], X[:,1])
             return dm
         
         else:
@@ -94,16 +84,12 @@ def cCdist(XA, XB, metric='haversine'):
         mstr = metric.lower()
         
         if mstr == 'haversine':
-        
-            for i in range(0, mA):
-                for j in range(0, mB):
-                    dm[i][j] = hv_distance(XA[i][0],XA[i][1],XB[j][0],XB[j][1])
+            dm = hv_distance(XA[:,0,None], XA[:,1,None], XB[:,0], XB[:,1])   
+            return dm
 
         elif mstr == 'euclidian':
-        
-            for i in range(0, mA):
-                for j in range(0, mB):
-                    dm[i][j] = sq_distance(XA[i][0],XA[i][1],XB[j][0],XB[j][1])
+            dm = sq_distance(XA[:,0,None], XA[:,1,None], XB[:,0], XB[:,1])   
+            return dm
         
         else:
             raise ValueError('Unknown Distance Metric: %s' % mstr)
