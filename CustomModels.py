@@ -1,5 +1,6 @@
 import numpy as np
 from CustomDistances import sq_distance, hv_distance
+from sklearn.metrics import mean_squared_error
     
     
 class LearningModel:
@@ -14,10 +15,7 @@ class LearningModel:
         pass
     
     def _score(self, Y, prediction):
-        assert Y.shape == prediction.shape
-        E = (Y - prediction)**2
-        score = np.sum(E)/E.size
-        return score
+        return mean_squared_error(Y, prediction)
     
 
 class NearestNeighbor(LearningModel):
