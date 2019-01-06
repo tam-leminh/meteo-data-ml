@@ -7,77 +7,64 @@ from sklearn.gaussian_process.kernels import DotProduct, WhiteKernel, RBF, Ratio
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.svm import SVR
+from sklearn.model_selection import ParameterGrid, ShuffleSplit
 from pyearth import Earth
     
-class LearningModel:
     
-    def __init__(self):
-        pass
-        
-    def train(self, X, Y, eval_score=False):
-        pass
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):
-        pass
-    
-    def _score(self, Y, prediction):
-        return mean_squared_error(Y, prediction)
-    
-
-class NearestNeighbor(LearningModel):
+class CustomModel:
     
     def __init__(self):
         pass
     
-    def train(self, X, Y, eval_score=False):
+    def fit(self, X, Y):
+        pass
+    
+    def predict(self, X):
+        pass
+    
+    
+class NearestNeighborRegressor(CustomModel):
+    
+    def __init__(self):
+        pass
+    
+    def fit(self, X, Y):
         assert X.shape[0] == Y.shape[0]
         self.X_in = X
         self.Y_in = Y
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
         
-    def predict(self, X_out, Y_out=None, eval_score=False):
+    def predict(self, X_out):
         nsample = self.X_in.shape[0]
         npreds = X_out.shape[0]
         prediction = np.empty([npreds,1])
-    
+        
+        for k in range(0, npreds):
+            distance = hv_distance(X_out[k][0], X_out[k][1], self.X_in[:,0], self.X_in[:,1])
+            prediction[k] = self.Y_in[np.argmin(distance)]
+            
         ##Vectorized operation is slower than for-loop
         #distance = hv_distance(X_out[:,0,None], X_out[:,1,None], self.X_in[:,0], self.X_in[:,1])
         #print(distance)
         #prediction = self.Y_in[np.argmin(distance, axis=1)]
+            
+        return prediction
+
     
-        for k in range(0, npreds):
-            distance = hv_distance(X_out[k][0], X_out[k][1], self.X_in[:,0], self.X_in[:,1])
-            prediction[k] = self.Y_in[np.argmin(distance)]
+class InverseDistanceWeightingRegressor(CustomModel): 
+    
+    params = {
+        'radius' : 500
+    }
+    
+    def __init__(self, **params):
+        self.params['radius'] = params.pop('radius', 500)
         
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
-        
-    
-class InverseDistanceWeighting(LearningModel):
-    
-    radius = 500
-    
-    def __init__(self):
-        pass
-    
-    def train(self, X, Y, eval_score=False):
+    def fit(self, X, Y):
         assert X.shape[0] == Y.shape[0]
         self.X_in = X
         self.Y_in = Y
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
         
-    def predict(self, X_out, Y_out=None, eval_score=False):
-        
+    def predict(self, X_out):
         nsample = self.X_in.shape[0]
         npreds = X_out.shape[0]
         prediction = np.empty([npreds,1])
@@ -85,13 +72,77 @@ class InverseDistanceWeighting(LearningModel):
         for k in range(0, npreds):
             distance = hv_distance(X_out[k][0], X_out[k][1], self.X_in[:,0], self.X_in[:,1])
             idx0 = np.where(distance < 1)
-            idx_in_radius = np.where(distance < self.radius)
+            idx_in_radius = np.where(distance < self.params['radius'])
             if idx_in_radius[0].size == 0 or idx0[0].size > 0:
                 prediction[k] = self.Y_in[np.argmin(distance)]
             else:
                 numerator = np.sum(self.Y_in[idx_in_radius][:,None]/distance[idx_in_radius][:,None])
                 denominator = np.sum(1/distance[idx_in_radius][:,None])
                 prediction[k] = numerator/denominator
+                
+        return prediction
+        
+    def get_params(self):
+        return self.params
+    
+    def set_params(self, **params):
+        self.params = params
+    
+    
+class LearningFramework:
+    
+    def __init__(self):
+        pass
+        
+    def train(self, X, Y, eval_score=False):
+        pass
+        
+    def predict(self, X_out, Y_out=None, eval_score=False):
+        pass
+    
+    def optimize(self, cv=5, **search_grid):
+        pass
+    
+    def _score(self, Y, prediction):
+        return mean_squared_error(Y, prediction)
+    
+
+class NearestNeighbor(LearningFramework):
+    
+    def __init__(self):
+        self.model = NearestNeighborRegressor()
+    
+    def train(self, X, Y, eval_score=False):
+        self.model.fit(X, Y)
+        if eval_score:
+            prediction, score = self.predict(X, Y, eval_score=True)
+            return score
+        
+    def predict(self, X_out, Y_out=None, eval_score=False):
+        prediction = self.model.predict(X_out)
+        if eval_score:
+            if Y_out is None:
+                raise ValueError("Need Y_out (Y_test) to evaluate score")
+            else:
+                score = self._score(Y_out, prediction)
+                return prediction, score
+        else:
+            return prediction
+        
+    
+class InverseDistanceWeighting(LearningFramework):
+    
+    def __init__(self, **param):
+        self.model = InverseDistanceWeightingRegressor(**param)
+    
+    def train(self, X, Y, eval_score=False):
+        self.model.fit(X, Y)
+        if eval_score:
+            prediction, score = self.predict(X, Y, eval_score=True)
+            return score
+        
+    def predict(self, X_out, Y_out=None, eval_score=False):
+        prediction = self.model.predict(X_out)
         
         if eval_score:
             if Y_out is None:
@@ -102,8 +153,34 @@ class InverseDistanceWeighting(LearningModel):
         else:
             return prediction
         
+    def optimize(self, X, Y, scoring='neg_mean_squared_error', cv=5, **param_grid):
+        scores = np.empty([len(list(ParameterGrid(param_grid))), 1])
+        n_splits = 10
+        k1 = 0
+        mean_score_candidate = np.empty([n_splits,1])
+        for candidate in list(ParameterGrid(param_grid)):
+            k2 = 0
+            self.model.set_params(**candidate)
+            ss = ShuffleSplit(n_splits=n_splits)
+            ss.get_n_splits(X, Y)
+            for train_index, test_index in ss.split(X, Y):
+                xtrain, xtest = X[train_index], X[test_index]
+                ytrain, ytest = Y[train_index], Y[test_index]
+                self.train(xtrain, ytrain)
+                pred, score = self.predict(xtest, ytest, eval_score=True)
+                mean_score_candidate[k2] = score
+                k2 += 1
+            scores[k1] = np.mean(mean_score_candidate)
+            k1 += 1
+        best_candidate = list(ParameterGrid(param_grid))[np.argmin(scores)]
+        score_candidate = np.min(scores)
+        return best_candidate, score_candidate, list(ParameterGrid(param_grid)), scores
+    
+    def set_params(self, **params):
+        self.model.set_params(**params)
         
-class GaussianProcess(LearningModel):
+        
+class GaussianProcess(LearningFramework):
     
     kernel = C(1.0)*RBF(length_scale=[10.0, 10.0]) + WhiteKernel(0.1)
     
@@ -135,7 +212,7 @@ class GaussianProcess(LearningModel):
             return prediction
 
 
-class GeographicallyWeightedRegressor(LearningModel):
+class GeographicallyWeightedRegressor(LearningFramework):
     
     kernel = C(1.0)*CustomKernels.RBF(length_scale=100.0, metric='haversine') + WhiteKernel(0.1)
     
@@ -168,7 +245,7 @@ class GeographicallyWeightedRegressor(LearningModel):
 
     
 
-class RegressionTree(LearningModel):
+class RegressionTree(LearningFramework):
     
     max_depth = 9
     
@@ -197,15 +274,26 @@ class RegressionTree(LearningModel):
             return prediction
 
 
-class RandomForest(LearningModel):
+class RandomForest(LearningFramework):
     
-    max_ntree = 1000
+    param = {
+        'n_estimators' : 1000,
+        'max_features' : 'auto',
+        'max_depth' : 10,
+        'random_state' : 42
+    }
+    hyper = [
+        'max_depth'
+    ]
+    
+    n_estimators = 1000
     max_depth = 10
     random_state = 42
     
     def __init__(self):
-        self.rforest = RandomForestRegressor(n_estimators=self.max_ntree, max_features='auto', 
-                                    max_depth=self.max_depth, random_state=self.random_state) 
+        self.rforest = RandomForestRegressor(**self.param)
+        #self.rforest = RandomForestRegressor(n_estimators=self.n_estimators, max_features='auto', 
+        #                            max_depth=self.max_depth, random_state=self.random_state) 
         
     def train(self, X, Y, eval_score=False):
         assert X.shape[0] == Y.shape[0]
@@ -229,7 +317,7 @@ class RandomForest(LearningModel):
             return prediction
 
 
-class ExtraTrees(LearningModel):
+class ExtraTrees(LearningFramework):
     
     max_ntree = 1000
     max_depth = 10
@@ -261,7 +349,7 @@ class ExtraTrees(LearningModel):
             return prediction
         
 
-class SupportVectorRegression(LearningModel):
+class SupportVectorRegression(LearningFramework):
     
     C = 10.0
     epsilon = 5.0
@@ -291,7 +379,7 @@ class SupportVectorRegression(LearningModel):
             return prediction
 
         
-class RegressionSplines(LearningModel):
+class RegressionSplines(LearningFramework):
     
     max_degree = 3
     penalty = 3.0
