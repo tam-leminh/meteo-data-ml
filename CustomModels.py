@@ -25,7 +25,9 @@ class CustomModel:
     
 class NearestNeighborRegressor(CustomModel):
     
-    def __init__(self):
+    params = {}
+    
+    def __init__(self, **params):
         pass
     
     def fit(self, X, Y):
@@ -48,6 +50,12 @@ class NearestNeighborRegressor(CustomModel):
         #prediction = self.Y_in[np.argmin(distance, axis=1)]
             
         return prediction
+    
+    def get_params(self):
+        return self.params
+    
+    def set_params(self, **params):
+        self.params = params
 
     
 class InverseDistanceWeightingRegressor(CustomModel): 
@@ -76,8 +84,8 @@ class InverseDistanceWeightingRegressor(CustomModel):
             if idx_in_radius[0].size == 0 or idx0[0].size > 0:
                 prediction[k] = self.Y_in[np.argmin(distance)]
             else:
-                numerator = np.sum(self.Y_in[idx_in_radius][:,None]/distance[idx_in_radius][:,None])
-                denominator = np.sum(1/distance[idx_in_radius][:,None])
+                numerator = np.sum(self.Y_in[:,None][idx_in_radius]/distance[idx_in_radius])
+                denominator = np.sum(1/distance[idx_in_radius])
                 prediction[k] = numerator/denominator
                 
         return prediction
@@ -95,63 +103,62 @@ class LearningFramework:
         pass
         
     def train(self, X, Y, eval_score=False):
-        pass
+        self.model.fit(X, np.ravel(Y))
+        if eval_score:
+            prediction, score = self.predict(X, Y, eval_score=True)
+            return score
         
     def predict(self, X_out, Y_out=None, eval_score=False):
-        pass
+        prediction = self.model.predict(X_out)
+        if eval_score:
+            if Y_out is None:
+                raise ValueError("Need Y_out (Y_test) to evaluate score")
+            else:
+                score = self._score(Y_out, prediction)
+                return prediction, score
+        else:
+            return prediction
     
-    def optimize(self, cv=5, **search_grid):
-        pass
+    def optimize(self, X, Y, scoring='neg_mean_squared_error', cv=5, **param_grid):
+        scores = np.empty([len(list(ParameterGrid(param_grid))), 1])
+        n_splits = 10
+        k1 = 0
+        mean_score_candidate = np.empty([n_splits,1])
+        for candidate in list(ParameterGrid(param_grid)):
+            k2 = 0
+            self.model.set_params(**candidate)
+            ss = ShuffleSplit(n_splits=n_splits)
+            ss.get_n_splits(X, Y)
+            for train_index, test_index in ss.split(X, Y):
+                xtrain, xtest = X[train_index], X[test_index]
+                ytrain, ytest = Y[train_index], Y[test_index]
+                self.train(xtrain, ytrain)
+                pred, score = self.predict(xtest, ytest, eval_score=True)
+                mean_score_candidate[k2] = score
+                k2 += 1
+            scores[k1] = np.mean(mean_score_candidate)
+            k1 += 1
+        best_candidate = list(ParameterGrid(param_grid))[np.argmin(scores)]
+        score_candidate = np.min(scores)
+        return best_candidate, score_candidate, list(ParameterGrid(param_grid)), scores
     
     def _score(self, Y, prediction):
         return mean_squared_error(Y, prediction)
     
+    def set_params(self, **params):
+        self.model.set_params(**params)
+        
 
 class NearestNeighbor(LearningFramework):
     
     def __init__(self):
         self.model = NearestNeighborRegressor()
-    
-    def train(self, X, Y, eval_score=False):
-        self.model.fit(X, Y)
-        if eval_score:
-            prediction, score = self.predict(X, Y, eval_score=True)
-            return score
+
         
-    def predict(self, X_out, Y_out=None, eval_score=False):
-        prediction = self.model.predict(X_out)
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
-        
-    
 class InverseDistanceWeighting(LearningFramework):
     
     def __init__(self, **param):
         self.model = InverseDistanceWeightingRegressor(**param)
-    
-    def train(self, X, Y, eval_score=False):
-        self.model.fit(X, Y)
-        if eval_score:
-            prediction, score = self.predict(X, Y, eval_score=True)
-            return score
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):
-        prediction = self.model.predict(X_out)
-        
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
         
     def optimize(self, X, Y, scoring='neg_mean_squared_error', cv=5, **param_grid):
         scores = np.empty([len(list(ParameterGrid(param_grid))), 1])
@@ -185,31 +192,10 @@ class GaussianProcess(LearningFramework):
     kernel = C(1.0)*RBF(length_scale=[10.0, 10.0]) + WhiteKernel(0.1)
     
     def __init__(self):
-        self.gpr = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer=None, n_restarts_optimizer=10, 
+        self.model = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer=None, n_restarts_optimizer=10, 
                                        normalize_y=True, random_state=0)
-        #gpr = GaussianProcessRegressor(kernel=kernel, alpha = 0, optimizer='fmin_l_bfgs_b', n_restarts_optimizer=10, 
+        #self.model = GaussianProcessRegressor(kernel=kernel, alpha = 0, optimizer='fmin_l_bfgs_b', n_restarts_optimizer=10, 
         #                               normalize_y=True, random_state=0).fit(X, Y)
-    
-    def train(self, X, Y, eval_score=False):
-        assert X.shape[0] == Y.shape[0]
-        self.X_in = X
-        self.Y_in = Y
-        self.gpr.fit(self.X_in, self.Y_in)
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):   
-        
-        prediction = self.gpr.predict(X_out)
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
 
 
 class GeographicallyWeightedRegressor(LearningFramework):
@@ -217,32 +203,10 @@ class GeographicallyWeightedRegressor(LearningFramework):
     kernel = C(1.0)*CustomKernels.RBF(length_scale=100.0, metric='haversine') + WhiteKernel(0.1)
     
     def __init__(self):
-        #self.gwr = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer='fmin_l_bfgs_b', n_restarts_optimizer=10, 
+        #self.model = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer='fmin_l_bfgs_b', n_restarts_optimizer=10, 
         #                               normalize_y=True, random_state=0).fit(X, Y)
-        self.gwr = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer=None, n_restarts_optimizer=10, 
+        self.model = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer=None, n_restarts_optimizer=10, 
                                        normalize_y=True, random_state=0)
-    
-    def train(self, X, Y, eval_score=False):
-        assert X.shape[0] == Y.shape[0]
-        self.X_in = X
-        self.Y_in = Y
-        self.gwr.fit(self.X_in, self.Y_in)
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):   
-        
-        prediction = self.gwr.predict(X_out)
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
-
     
 
 class RegressionTree(LearningFramework):
@@ -250,28 +214,7 @@ class RegressionTree(LearningFramework):
     max_depth = 9
     
     def __init__(self):
-        self.rtree = DecisionTreeRegressor(max_depth=self.max_depth)
-    
-    def train(self, X, Y, eval_score=False):
-        assert X.shape[0] == Y.shape[0]
-        self.X_in = X
-        self.Y_in = Y
-        self.rtree.fit(self.X_in, self.Y_in)
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):   
-        
-        prediction = self.rtree.predict(X_out)
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
+        self.model = DecisionTreeRegressor(max_depth=self.max_depth)
 
 
 class RandomForest(LearningFramework):
@@ -291,30 +234,9 @@ class RandomForest(LearningFramework):
     random_state = 42
     
     def __init__(self):
-        self.rforest = RandomForestRegressor(**self.param)
-        #self.rforest = RandomForestRegressor(n_estimators=self.n_estimators, max_features='auto', 
+        self.model = RandomForestRegressor(**self.param)
+        #self.model = RandomForestRegressor(n_estimators=self.n_estimators, max_features='auto', 
         #                            max_depth=self.max_depth, random_state=self.random_state) 
-        
-    def train(self, X, Y, eval_score=False):
-        assert X.shape[0] == Y.shape[0]
-        self.X_in = X
-        self.Y_in = Y
-        self.rforest.fit(self.X_in, np.ravel(self.Y_in))
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):   
-        
-        prediction = self.rforest.predict(X_out)
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
 
 
 class ExtraTrees(LearningFramework):
@@ -324,30 +246,9 @@ class ExtraTrees(LearningFramework):
     random_state = 42
     
     def __init__(self):
-        self.extrees = ExtraTreesRegressor(n_estimators=self.max_ntree, max_features='auto', 
+        self.model = ExtraTreesRegressor(n_estimators=self.max_ntree, max_features='auto', 
                                     max_depth=self.max_depth, random_state=self.random_state)
     
-    def train(self, X, Y, eval_score=False):
-        assert X.shape[0] == Y.shape[0]
-        self.X_in = X
-        self.Y_in = Y
-        self.extrees.fit(self.X_in, np.ravel(self.Y_in))
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):   
-        
-        prediction = self.extrees.predict(X_out)
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
-        
 
 class SupportVectorRegression(LearningFramework):
     
@@ -355,28 +256,7 @@ class SupportVectorRegression(LearningFramework):
     epsilon = 5.0
     
     def __init__(self):
-        self.svr = SVR(gamma='auto', C=self.C, epsilon=self.epsilon)
-            
-    def train(self, X, Y, eval_score=False):
-        assert X.shape[0] == Y.shape[0]
-        self.X_in = X
-        self.Y_in = Y
-        self.svr.fit(self.X_in, np.ravel(self.Y_in))
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):   
-        
-        prediction = self.svr.predict(X_out)
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
+        self.model = SVR(gamma='auto', C=self.C, epsilon=self.epsilon)
 
         
 class RegressionSplines(LearningFramework):
@@ -385,26 +265,5 @@ class RegressionSplines(LearningFramework):
     penalty = 3.0
     
     def __init__(self):
-        self.splin = Earth(max_degree = self.max_degree, penalty = self.penalty)
+        self.model = Earth(max_degree = self.max_degree, penalty = self.penalty)
             
-    def train(self, X, Y, eval_score=False):
-        assert X.shape[0] == Y.shape[0]
-        self.X_in = X
-        self.Y_in = Y
-        self.splin.fit(self.X_in, self.Y_in)
-        if eval_score:
-            prediction, score = self.predict(self.X_in, self.Y_in, eval_score=True)
-            return score
-        
-    def predict(self, X_out, Y_out=None, eval_score=False):   
-        
-        prediction = self.splin.predict(X_out)
-        if eval_score:
-            if Y_out is None:
-                raise ValueError("Need Y_out (Y_test) to evaluate score")
-            else:
-                score = self._score(Y_out, prediction)
-                return prediction, score
-        else:
-            return prediction
-    
