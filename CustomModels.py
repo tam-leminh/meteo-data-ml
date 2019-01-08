@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from CustomDistances import sq_distance, hv_distance
 import CustomKernels
 from sklearn.metrics import mean_squared_error
@@ -9,6 +10,16 @@ from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.svm import SVR
 from sklearn.model_selection import ParameterGrid, ShuffleSplit
 from pyearth import Earth
+            
+            
+def checkCV(cv='warn', n_split=3):
+        
+    if cv is 'KFold':
+        return KFold(n_split)
+    elif cv is 'ShuffleSplit':
+        return ShuffleSplit(n_split)
+    else:
+        raise ValueError("CV technique must be 'KFold' or 'ShuffleSplit'")
     
     
 class CustomModel:
@@ -99,7 +110,10 @@ class InverseDistanceWeightingRegressor(CustomModel):
     
 class LearningFramework:
     
-    def __init__(self):
+    def_params = {}
+    current_params = {}
+    
+    def __init__(self, **params):
         pass
         
     def train(self, X, Y, eval_score=False):
@@ -119,151 +133,180 @@ class LearningFramework:
         else:
             return prediction
     
-    def optimize(self, X, Y, scoring='neg_mean_squared_error', cv=5, **param_grid):
-        scores = np.empty([len(list(ParameterGrid(param_grid))), 1])
-        n_splits = 10
-        k1 = 0
-        mean_score_candidate = np.empty([n_splits,1])
-        for candidate in list(ParameterGrid(param_grid)):
-            k2 = 0
-            self.model.set_params(**candidate)
-            ss = ShuffleSplit(n_splits=n_splits)
-            ss.get_n_splits(X, Y)
-            for train_index, test_index in ss.split(X, Y):
+    def optimize(self, X, Y, scoring='neg_mean_squared_error', cv='warn', n_splits=5, info=True, **params):
+        
+        param_grid = list(ParameterGrid(params))
+        mean_scores = np.empty([len(param_grid), 1])
+        splitter = checkCV(cv, n_splits)
+        scores_candidate = np.empty([n_splits,1])
+        if info:
+            info_out = pd.DataFrame(columns = ['Candidate', 'Mean CV Score'])
+        
+        for i in range(0, len(param_grid)):
+            self.model.set_params(**param_grid[i])
+            splitter.get_n_splits(X, Y)
+            k = 0
+            
+            for train_index, test_index in splitter.split(X, Y):
                 xtrain, xtest = X[train_index], X[test_index]
                 ytrain, ytest = Y[train_index], Y[test_index]
                 self.train(xtrain, ytrain)
-                pred, score = self.predict(xtest, ytest, eval_score=True)
-                mean_score_candidate[k2] = score
-                k2 += 1
-            scores[k1] = np.mean(mean_score_candidate)
-            k1 += 1
-        best_candidate = list(ParameterGrid(param_grid))[np.argmin(scores)]
-        score_candidate = np.min(scores)
-        return best_candidate, score_candidate, list(ParameterGrid(param_grid)), scores
+                pred, scores_candidate[k] = self.predict(xtest, ytest, eval_score=True)
+                k += 1
+                
+            mean_scores[i] = np.mean(scores_candidate)
+            if info:
+                info_out.loc[i] = [param_grid[i], np.ravel(mean_scores)[i]]
+            
+        best_candidate = param_grid[np.argmax(mean_scores)]
+        best_score = np.max(mean_scores)
+        if info:
+            return best_candidate, best_score, info_out
+        else:
+            return best_candidate, best_score
+        
     
     def _score(self, Y, prediction):
-        return mean_squared_error(Y, prediction)
+        return -mean_squared_error(Y, prediction)
     
+    def get_params(self):
+        return self.model.get_params()
+        
     def set_params(self, **params):
         self.model.set_params(**params)
+        
+    def get_name(self):
+        return self.__class__.__name__
+        
+    def to_string(self):
+        return self.__class__.__name__, str(self.get_params())
         
 
 class NearestNeighbor(LearningFramework):
     
-    def __init__(self):
-        self.model = NearestNeighborRegressor()
+    def_params = {}
+    
+    def __init__(self, **params):
+        if params == {}:
+            self.model = NearestNeighborRegressor(**self.def_params)
+        else:
+            self.model = NearestNeighborRegressor(**params)
 
         
 class InverseDistanceWeighting(LearningFramework):
-    
-    def __init__(self, **param):
-        self.model = InverseDistanceWeightingRegressor(**param)
         
-    def optimize(self, X, Y, scoring='neg_mean_squared_error', cv=5, **param_grid):
-        scores = np.empty([len(list(ParameterGrid(param_grid))), 1])
-        n_splits = 10
-        k1 = 0
-        mean_score_candidate = np.empty([n_splits,1])
-        for candidate in list(ParameterGrid(param_grid)):
-            k2 = 0
-            self.model.set_params(**candidate)
-            ss = ShuffleSplit(n_splits=n_splits)
-            ss.get_n_splits(X, Y)
-            for train_index, test_index in ss.split(X, Y):
-                xtrain, xtest = X[train_index], X[test_index]
-                ytrain, ytest = Y[train_index], Y[test_index]
-                self.train(xtrain, ytrain)
-                pred, score = self.predict(xtest, ytest, eval_score=True)
-                mean_score_candidate[k2] = score
-                k2 += 1
-            scores[k1] = np.mean(mean_score_candidate)
-            k1 += 1
-        best_candidate = list(ParameterGrid(param_grid))[np.argmin(scores)]
-        score_candidate = np.min(scores)
-        return best_candidate, score_candidate, list(ParameterGrid(param_grid)), scores
+    def_params = {
+        'radius': 100
+    }
     
-    def set_params(self, **params):
-        self.model.set_params(**params)
+    def __init__(self, **params):
+        if params == {}:
+            self.model = InverseDistanceWeightingRegressor(**self.def_params)
+        else:
+            self.model = InverseDistanceWeightingRegressor(**params)
         
         
 class GaussianProcess(LearningFramework):
+         
+    def_params = {
+        'kernel' : C(1.0)*RBF(length_scale=[10.0, 10.0]) + WhiteKernel(0.1),
+        'alpha' : 0,
+        'optimizer' : None,
+        'n_restarts_optimizer' : 0,
+        'normalize_y' : True
+    }
     
-    kernel = C(1.0)*RBF(length_scale=[10.0, 10.0]) + WhiteKernel(0.1)
-    
-    def __init__(self):
-        self.model = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer=None, n_restarts_optimizer=10, 
-                                       normalize_y=True, random_state=0)
-        #self.model = GaussianProcessRegressor(kernel=kernel, alpha = 0, optimizer='fmin_l_bfgs_b', n_restarts_optimizer=10, 
-        #                               normalize_y=True, random_state=0).fit(X, Y)
+    def __init__(self, **params):
+        if params == {}:
+            self.model = GaussianProcessRegressor(**self.def_params)
+        else:
+            self.model = GaussianProcessRegressor(**params)
 
 
 class GeographicallyWeightedRegressor(LearningFramework):
+                
+    def_params = {
+        'kernel' : C(1.0)*CustomKernels.RBF(length_scale=100.0, metric='haversine') + WhiteKernel(0.1),
+        'alpha' : 0,
+        'optimizer' : None,
+        'n_restarts_optimizer' : 0,
+        'normalize_y' : True
+    }
     
-    kernel = C(1.0)*CustomKernels.RBF(length_scale=100.0, metric='haversine') + WhiteKernel(0.1)
-    
-    def __init__(self):
-        #self.model = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer='fmin_l_bfgs_b', n_restarts_optimizer=10, 
-        #                               normalize_y=True, random_state=0).fit(X, Y)
-        self.model = GaussianProcessRegressor(kernel=self.kernel, alpha = 0, optimizer=None, n_restarts_optimizer=10, 
-                                       normalize_y=True, random_state=0)
-    
+    def __init__(self, **params):
+        if params == {}:
+            self.model = GaussianProcessRegressor(**self.def_params)
+        else:
+            self.model = GaussianProcessRegressor(**params)
+            
 
 class RegressionTree(LearningFramework):
+                 
+    def_params = {
+        'max_depth' : 9
+    }
     
-    max_depth = 9
-    
-    def __init__(self):
-        self.model = DecisionTreeRegressor(max_depth=self.max_depth)
-
+    def __init__(self, **params):
+        if params == {}:
+            self.model = DecisionTreeRegressor(**self.def_params)
+        else:
+            self.model = DecisionTreeRegressor(**params)
+            
 
 class RandomForest(LearningFramework):
-    
-    param = {
+                     
+    def_params = {
         'n_estimators' : 1000,
         'max_features' : 'auto',
-        'max_depth' : 10,
-        'random_state' : 42
+        'max_depth' : 10
     }
-    hyper = [
-        'max_depth'
-    ]
     
-    n_estimators = 1000
-    max_depth = 10
-    random_state = 42
+    def __init__(self, **params):
+        if params == {}:
+            self.model = RandomForestRegressor(**self.def_params)
+        else:
+            self.model = RandomForestRegressor(**params)
     
-    def __init__(self):
-        self.model = RandomForestRegressor(**self.param)
-        #self.model = RandomForestRegressor(n_estimators=self.n_estimators, max_features='auto', 
-        #                            max_depth=self.max_depth, random_state=self.random_state) 
-
 
 class ExtraTrees(LearningFramework):
+                         
+    def_params = {
+        'n_estimators' : 1000,
+        'max_features' : 'auto',
+        'max_depth' : 10
+    }
     
-    max_ntree = 1000
-    max_depth = 10
-    random_state = 42
-    
-    def __init__(self):
-        self.model = ExtraTreesRegressor(n_estimators=self.max_ntree, max_features='auto', 
-                                    max_depth=self.max_depth, random_state=self.random_state)
-    
-
-class SupportVectorRegression(LearningFramework):
-    
-    C = 10.0
-    epsilon = 5.0
-    
-    def __init__(self):
-        self.model = SVR(gamma='auto', C=self.C, epsilon=self.epsilon)
+    def __init__(self, **params):
+        if params == {}:
+            self.model = ExtraTreesRegressor(**self.def_params)
+        else:
+            self.model = ExtraTreesRegressor(**params)
 
         
+class SupportVectorRegression(LearningFramework):
+                             
+    def_params = {
+        'gamma': 'auto',
+        'C' : 10.0,
+        'epsilon' : 5.0
+    }
+    
+    def __init__(self, **params):
+        if params == {}:
+            self.model = SVR(**self.def_params)
+        else:
+            self.model = SVR(**params)
+        
+        
 class RegressionSplines(LearningFramework):
+                                
+    def_params = {
+        'max_degree' : 3,
+        'penalty' : 3.0
+    }
     
-    max_degree = 3
-    penalty = 3.0
-    
-    def __init__(self):
-        self.model = Earth(max_degree = self.max_degree, penalty = self.penalty)
-            
+    def __init__(self, **params):
+        if params == {}:
+            self.model = Earth(**self.def_params)
+        else:
+            self.model = Earth(**params)
