@@ -140,7 +140,7 @@ class LearningFramework:
         splitter = checkCV(cv, n_splits)
         scores_candidate = np.empty([n_splits,1])
         if info:
-            info_out = pd.DataFrame(columns = ['Candidate', 'Mean CV Score'])
+            info_out = pd.DataFrame(columns = ['Model', 'Parameters', 'Mean CV Score'])
         
         for i in range(0, len(param_grid)):
             self.model.set_params(**param_grid[i])
@@ -156,7 +156,7 @@ class LearningFramework:
                 
             mean_scores[i] = np.mean(scores_candidate)
             if info:
-                info_out.loc[i] = [param_grid[i], np.ravel(mean_scores)[i]]
+                info_out.loc[i] = [self.get_name(), param_grid[i], np.ravel(mean_scores)[i]]
             
         best_candidate = param_grid[np.argmax(mean_scores)]
         best_score = np.max(mean_scores)
