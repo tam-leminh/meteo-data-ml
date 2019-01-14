@@ -1,4 +1,4 @@
-# meteo-data-regressor
+# meteo-dr
 
 ## Setup
 
