@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Custom models based on sklearn models
+Custom learning framework as a wrapper for sklearn models and custom models
+
+@author: Tâm Le Minh
+"""
 import numpy as np
 import pandas as pd
 from CustomDistances import sq_distance, hv_distance
@@ -12,6 +19,7 @@ from sklearn.model_selection import ParameterGrid, ShuffleSplit
 from pyearth import Earth
             
             
+##Helper class to check the CV argument in optimization functions
 def checkCV(cv='warn', n_split=3):
         
     if cv is 'KFold':
@@ -22,6 +30,7 @@ def checkCV(cv='warn', n_split=3):
         raise ValueError("CV technique must be 'KFold' or 'ShuffleSplit'")
     
     
+##Base class for sklearn's style custom models
 class CustomModel:
     
     def __init__(self):
@@ -33,7 +42,8 @@ class CustomModel:
     def predict(self, X):
         pass
     
-    
+
+##NNI implementation as a custom model
 class NearestNeighborRegressor(CustomModel):
     
     params = {}
@@ -69,6 +79,7 @@ class NearestNeighborRegressor(CustomModel):
         self.params = params
 
     
+##IDW implementation as a custom model
 class InverseDistanceWeightingRegressor(CustomModel): 
     
     params = {
@@ -108,6 +119,7 @@ class InverseDistanceWeightingRegressor(CustomModel):
         self.params = params
     
     
+##Wrapper class to use sklearn models and custom models with Meteo-DR pipeline
 class LearningFramework:
     
     def_params = {}
@@ -116,12 +128,19 @@ class LearningFramework:
     def __init__(self, **params):
         pass
         
+    ##Calculates an loss function score
+    # Only MSE available currently
+    def _score(self, Y, prediction):
+        return -mean_squared_error(Y, prediction)
+    
+    ##Train the model, can return training score
     def train(self, X, Y, eval_score=False):
         self.model.fit(X, np.ravel(Y))
         if eval_score:
             prediction, score = self.predict(X, Y, eval_score=True)
             return score
         
+    ##Predict with the model, can return test score
     def predict(self, X_out, Y_out=None, eval_score=False):
         prediction = self.model.predict(X_out)
         if eval_score:
@@ -133,6 +152,8 @@ class LearningFramework:
         else:
             return prediction
     
+    ##Optimize the model, returns best candidate parameters, best score and dataframe containing 
+    # the score for each parameter tested
     def optimize(self, X, Y, scoring='neg_mean_squared_error', cv='warn', n_splits=5, info=True, **params):
         
         param_grid = list(ParameterGrid(params))
@@ -166,9 +187,6 @@ class LearningFramework:
             return best_candidate, best_score
         
     
-    def _score(self, Y, prediction):
-        return -mean_squared_error(Y, prediction)
-    
     def get_params(self):
         return self.model.get_params()
         
@@ -182,6 +200,7 @@ class LearningFramework:
         return self.__class__.__name__, str(self.get_params())
         
 
+##NNI implementation of LearningFramework
 class NearestNeighbor(LearningFramework):
     
     def_params = {}
@@ -192,7 +211,8 @@ class NearestNeighbor(LearningFramework):
         else:
             self.model = NearestNeighborRegressor(**params)
 
-        
+            
+##IDW implementation of LearningFramework   
 class InverseDistanceWeighting(LearningFramework):
         
     def_params = {
@@ -205,7 +225,8 @@ class InverseDistanceWeighting(LearningFramework):
         else:
             self.model = InverseDistanceWeightingRegressor(**params)
         
-        
+
+##Gaussian Process implementation of LearningFramework   
 class GaussianProcess(LearningFramework):
          
     def_params = {
@@ -223,6 +244,7 @@ class GaussianProcess(LearningFramework):
             self.model = GaussianProcessRegressor(**params)
 
 
+##GWR implementation of LearningFramework  
 class GeographicallyWeightedRegressor(LearningFramework):
                 
     def_params = {
@@ -240,6 +262,7 @@ class GeographicallyWeightedRegressor(LearningFramework):
             self.model = GaussianProcessRegressor(**params)
             
 
+##Regression Tree implementation of LearningFramework  
 class RegressionTree(LearningFramework):
                  
     def_params = {
@@ -253,6 +276,7 @@ class RegressionTree(LearningFramework):
             self.model = DecisionTreeRegressor(**params)
             
 
+##Random Forest implementation of LearningFramework  
 class RandomForest(LearningFramework):
                      
     def_params = {
@@ -268,6 +292,7 @@ class RandomForest(LearningFramework):
             self.model = RandomForestRegressor(**params)
     
 
+##Extra Trees implementation of LearningFramework  
 class ExtraTrees(LearningFramework):
                          
     def_params = {
@@ -282,7 +307,8 @@ class ExtraTrees(LearningFramework):
         else:
             self.model = ExtraTreesRegressor(**params)
 
-        
+
+##SVR implementation of LearningFramework  
 class SupportVectorRegression(LearningFramework):
                              
     def_params = {
@@ -297,7 +323,8 @@ class SupportVectorRegression(LearningFramework):
         else:
             self.model = SVR(**params)
         
-        
+
+##Polynomial Splines Regression implementation of LearningFramework  
 class RegressionSplines(LearningFramework):
                                 
     def_params = {

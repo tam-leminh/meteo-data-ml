@@ -1,8 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Custom distances, notably Great Circle distance with Haversine formula
+Includes custom pairwise distances functions cdist and pdist
+
+@author: Tâm Le Minh
+"""
 from scipy._lib.six import callable, string_types
 import numpy as np
 import math
 
-#Define a distance
+
+##Euclidian angular distance, should be used only for testing
 def sq_distance(lat1, lon1, lat2, lon2):
     if isinstance(lat1, np.ndarray):
         d = np.sqrt(np.power(lon2-lon1,2) + np.power(lat2-lat1,2))
@@ -12,6 +20,8 @@ def sq_distance(lat1, lon1, lat2, lon2):
         d = math.sqrt((lon2-lon1)**2 + (lat2-lat1)**2)
     return d
     
+    
+##Great circle distance with Haversine formula
 def hv_distance(lat1, lon1, lat2, lon2):
     radius = 6371 # km
     if isinstance(lat1, np.ndarray) or isinstance(lat2, np.ndarray):
@@ -31,6 +41,8 @@ def hv_distance(lat1, lon1, lat2, lon2):
     d = radius * c
     return d
     
+    
+##Returns the distances between elements of a vector
 def cPdist(X, metric='haversine'):
 
     X = np.asarray(X, order='c')
@@ -62,6 +74,8 @@ def cPdist(X, metric='haversine'):
                         'or a function.')
     return dm
     
+    
+##Returns the pariwise distances between elements of 2 vectors
 def cCdist(XA, XB, metric='haversine'):
 
     XA = np.asarray(XA, order='c')

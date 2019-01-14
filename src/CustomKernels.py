@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+Custom RBF Kernel for Geographically Weighted Regression
+
+@author: Tâm Le Minh
+"""
 from sklearn.gaussian_process.kernels import StationaryKernelMixin, NormalizedKernelMixin, Kernel
 from sklearn.gaussian_process.kernels import Hyperparameter
 from sklearn.gaussian_process.kernels import _check_length_scale
-
 import numpy as np
 from scipy.spatial.distance import pdist, cdist, squareform
 import CustomDistances
