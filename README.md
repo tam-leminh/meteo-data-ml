@@ -1,4 +1,4 @@
-# meteo-dr
+# Meteo-DR
 
 ## Setup
 
