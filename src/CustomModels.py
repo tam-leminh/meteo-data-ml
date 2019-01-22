@@ -2,6 +2,16 @@
 """
 Custom models based on sklearn models
 Custom learning framework as a wrapper for sklearn models and custom models
+List of models and example of parameters:
+    NearestNeighbor - None
+    InverseDistanceWeighting - Radius
+    GaussianProcess - Kernel, alpha 
+    GeographicallyWeightedRegressor - Kernel, alpha
+    RegressionTree - Max_depth
+    RandomForest - N_estimators, Max_features, Max_depth
+    ExtraTrees - N_estimators, Max_features, Max_depth
+    SupportVectorRegression - Gamma, Epsilon, C
+    RegressionSplines - Max_degree, Penalty
 
 @author: Tâm Le Minh
 """
