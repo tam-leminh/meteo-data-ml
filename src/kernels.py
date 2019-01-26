@@ -9,7 +9,7 @@ from sklearn.gaussian_process.kernels import Hyperparameter
 from sklearn.gaussian_process.kernels import _check_length_scale
 import numpy as np
 from scipy.spatial.distance import pdist, cdist, squareform
-import CustomDistances
+import distances
 
 
 class RBF(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
@@ -76,7 +76,7 @@ class RBF(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
         X = np.atleast_2d(X)
         length_scale = _check_length_scale(X, self.length_scale)
         if Y is None:
-            dists = CustomDistances.cPdist(X, metric=self.metric) / np.power(length_scale, 2)
+            dists = distances.cPdist(X, metric=self.metric) / np.power(length_scale, 2)
             K = np.exp(-.5 * dists)
             # convert from upper-triangular matrix to square matrix
             if len(K.shape) == 1:
@@ -86,7 +86,7 @@ class RBF(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
             if eval_gradient:
                 raise ValueError(
                     "Gradient can only be evaluated when Y is None.")
-            dists = CustomDistances.cCdist(X, Y, metric=self.metric) / np.power(length_scale, 2)
+            dists = distances.cCdist(X, Y, metric=self.metric) / np.power(length_scale, 2)
             K = np.exp(-.5 * dists)
 
         if eval_gradient:

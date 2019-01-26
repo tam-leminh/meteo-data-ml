@@ -17,8 +17,8 @@ List of models and example of parameters:
 """
 import numpy as np
 import pandas as pd
-from CustomDistances import sq_distance, hv_distance
-import CustomKernels
+from distances import sq_distance, hv_distance
+import kernels
 from sklearn.metrics import mean_squared_error
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import DotProduct, WhiteKernel, RBF, RationalQuadratic, ConstantKernel as C
@@ -258,7 +258,7 @@ class GaussianProcess(LearningFramework):
 class GeographicallyWeightedRegressor(LearningFramework):
                 
     def_params = {
-        'kernel' : C(1.0)*CustomKernels.RBF(length_scale=100.0, metric='haversine') + WhiteKernel(0.1),
+        'kernel' : C(1.0)*kernels.RBF(length_scale=100.0, metric='haversine') + WhiteKernel(0.1),
         'alpha' : 0,
         'optimizer' : None,
         'n_restarts_optimizer' : 0,

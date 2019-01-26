@@ -5,7 +5,7 @@ Example script for running a list of models and plotting the results
 @author: Tâm Le Minh
 """
 from src.meteodr import MeteoPipeline
-import src.CustomModels as CustomModels
+import src.models as CustomModels
 
 
 ##Prepare the data and the pipeline

@@ -9,10 +9,10 @@ import os
 import numpy as np
 import pandas as pd
 import time, datetime
-import CustomKernels, CustomModels
+import kernels, models
 from sklearn.model_selection import train_test_split
 import ast
-from CustomPlot import MeteoPlotter
+from plot import MeteoPlotter
 
 
 ##Formatting function
@@ -62,7 +62,7 @@ class MeteoPipeline:
     def load_models(self, file_path_name):
         df = pd.read_csv(file_path_name, ',')
         df['Parameters'] = df['Parameters'].apply(ast.literal_eval)
-        df['Model'] = 'CustomModels.' + df['Model']
+        df['Model'] = 'models.' + df['Model']
         for idx, model in df['Model'].iteritems():
             df.loc[idx, 'Model'] = eval(model)()
             df.loc[idx, 'Model'].set_params(**df.loc[idx, 'Parameters'])

@@ -5,8 +5,8 @@ for the best candidate from each model
 
 @author: Tâm Le Minh
 """
-from src.meteodr import Pipeline, Plotter
-import src.CustomModels as CustomModels
+from src.meteodr import MeteoPipeline
+import src.models as CustomModels
 
 
 ##Prepare the data and the pipeline
