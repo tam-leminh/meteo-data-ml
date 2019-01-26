@@ -24,7 +24,7 @@ def owm_query(id_list, temp, it = 0):
             time.sleep(1)
             owm_query(id_list, temp, it)
         else:
-            print("Query failed")
+            raise RuntimeError("Query failed")
 
             
 if __name__=='__main__':
