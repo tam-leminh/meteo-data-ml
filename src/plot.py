@@ -114,4 +114,5 @@ class MeteoPlotter:
         self._plot_contours()
         patch = self._mask_ocean()
         self.ax.add_patch(patch)
+        self.ax.set_title(model.__class__.__name__, fontsize=36)
         plt.show()

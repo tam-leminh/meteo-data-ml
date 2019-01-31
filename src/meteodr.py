@@ -133,6 +133,7 @@ class MeteoPipeline:
                 params = param_grid_list[i]
                 model_parameters, score_train = self.simple_optimization(model, params, cv=cv, n_restart=n_restart)
                 model.set_params(**model_parameters)
+                print(model_parameters)
                 self.predictions, score_test = model.predict(self.X_test, self.y_test, eval_score=True)
                 model_name = model.to_string()
                 model_parameters = str(model_parameters)
