@@ -9,10 +9,11 @@ import os
 import numpy as np
 import pandas as pd
 import time, datetime
-import kernels, models
+import src.kernels as kernels
+import src.models as models
 from sklearn.model_selection import train_test_split
 import ast
-from plot import MeteoPlotter
+from src.plot import MeteoPlotter
 
 
 ##Formatting function

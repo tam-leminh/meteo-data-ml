@@ -9,7 +9,7 @@ from sklearn.gaussian_process.kernels import Hyperparameter
 from sklearn.gaussian_process.kernels import _check_length_scale
 import numpy as np
 from scipy.spatial.distance import pdist, cdist, squareform
-import distances
+import src.distances
 
 
 class RBF(StationaryKernelMixin, NormalizedKernelMixin, Kernel):

@@ -17,8 +17,8 @@ List of models and example of parameters:
 """
 import numpy as np
 import pandas as pd
-from distances import sq_distance, hv_distance
-import kernels
+from src.distances import sq_distance, hv_distance
+import src.kernels as kernels
 from sklearn.metrics import mean_squared_error
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import DotProduct, WhiteKernel, RBF, RationalQuadratic, ConstantKernel as C
