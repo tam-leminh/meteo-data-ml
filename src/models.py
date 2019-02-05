@@ -27,6 +27,9 @@ from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.svm import SVR
 from sklearn.model_selection import ParameterGrid, ShuffleSplit
 from pyearth import Earth
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
             
             
 ##Helper class to check the CV argument in optimization functions
@@ -121,6 +124,60 @@ class InverseDistanceWeightingRegressor(CustomModel):
                 prediction[k] = numerator/denominator
                 
         return prediction
+        
+    def get_params(self):
+        return self.params
+    
+    def set_params(self, **params):
+        self.params = params
+    
+    
+class KerasNeuralNetwork(CustomModel):
+                         
+    params = {
+        'layers' : [64, 64],
+        'epochs' : 10,
+        'learning_rate' : 0.01,
+        'lr_decay' : 0,
+        'RMS_rho' : 0.9,
+        'RMS_epsilon' : 10e-7
+    }
+    
+    def __init__(self, **params):
+        self.params['layers'] = params.pop('layers', [64, 64])
+        self.params['epochs'] = params.pop('epochs', 10)
+        self.params['learning_rate'] = params.pop('learning_rate', 0.01)
+        self.params['lr_decay'] = params.pop('lr_decay', 0)
+        self.params['RMS_rho'] = params.pop('RMS_rho', 0.9)
+        self.params['RMS_epsilon'] = params.pop('RMS_epsilon', 10e-7)
+        
+    def fit(self, X, Y):
+        assert X.shape[0] == Y.shape[0]
+        self.X_in = X
+        self.Y_in = Y
+        self.nn = keras.Sequential()
+        i = 0
+        for hidden_units in range(len(self.params['layers'])):
+            if i==0:
+                self.nn.add(layers.Dense(hidden_units, input_shape=[2]))
+            else:
+                self.nn.add(layers.Dense(hidden_units))
+            self.nn.add(layers.LeakyReLU(alpha=0.01))
+            i = 1
+        self.nn.add(layers.Dense(1))
+        optimizer = keras.optimizers.RMSprop(lr=self.params['learning_rate'], 
+                                             rho=self.params['RMS_rho'], 
+                                             epsilon=self.params['RMS_epsilon'], 
+                                             decay=self.params['lr_decay'])
+        self.nn.compile(loss='mse',
+                        optimizer=optimizer,
+                        metrics=['mae', 'mse'])
+        print(self.X_in.shape)
+        print(self.Y_in.shape)
+        self.nn.fit(self.X_in, self.Y_in, epochs=self.params['epochs'], validation_split=0.2)
+        
+    def predict(self, X_out):
+        return self.nn.predict(X_out)
         
     def get_params(self):
         return self.params
@@ -347,3 +404,22 @@ class RegressionSplines(LearningFramework):
             self.model = Earth(**self.def_params)
         else:
             self.model = Earth(**params)
+
+class NeuralNetwork(LearningFramework):
+                                
+    def_params = {
+        'layers' : [64, 64],
+        'epochs' : 10,
+        'learning_rate' : 0.01,
+        'lr_decay' : 0,
+        'RMS_rho' : 0.9,
+        'RMS_epsilon' : 10e-7
+    }
+    
+    def __init__(self, **params):
+        if params == {}:
+            self.model = KerasNeuralNetwork(**self.def_params)
+        else:
+            self.model = KerasNeuralNetwork(**params)
+        
+        
