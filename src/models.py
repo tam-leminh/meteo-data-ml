@@ -157,13 +157,13 @@ class KerasNeuralNetwork(CustomModel):
         self.Y_in = Y
         self.nn = keras.Sequential()
         i = 0
-        for hidden_units in range(len(self.params['layers'])):
+        for hidden_units in self.params['layers']:
             if i==0:
-                self.nn.add(layers.Dense(hidden_units, input_shape=[2]))
+                self.nn.add(layers.Dense(hidden_units, input_shape=(2,)))
             else:
                 self.nn.add(layers.Dense(hidden_units))
             self.nn.add(layers.LeakyReLU(alpha=0.01))
-            i = 1
+            i += 1
         self.nn.add(layers.Dense(1))
         optimizer = keras.optimizers.RMSprop(lr=self.params['learning_rate'], 
                                              rho=self.params['RMS_rho'], 
@@ -172,12 +172,10 @@ class KerasNeuralNetwork(CustomModel):
         self.nn.compile(loss='mse',
                         optimizer=optimizer,
                         metrics=['mae', 'mse'])
-        print(self.X_in.shape)
-        print(self.Y_in.shape)
-        self.nn.fit(self.X_in, self.Y_in, epochs=self.params['epochs'], validation_split=0.2)
+        self.nn.fit(self.X_in/180, self.Y_in/30, epochs=self.params['epochs'], validation_split=0.2)
         
     def predict(self, X_out):
-        return self.nn.predict(X_out)
+        return 30*self.nn.predict(X_out/180)
         
     def get_params(self):
         return self.params
