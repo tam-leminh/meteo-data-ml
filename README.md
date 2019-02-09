@@ -7,6 +7,7 @@
 - Install [pyowm](https://github.com/csparpa/pyowm)
 - Install [py-earth](https://github.com/scikit-learn-contrib/py-earth)
 - Install [Basemap](https://matplotlib.org/basemap)
+- Install [Tensorflow](https://www.tensorflow.org/install)
 - Execute Cities2Locations.py to create locations.csv in data/current-version
 
 ## Data acquisition
